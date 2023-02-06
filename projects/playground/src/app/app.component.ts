@@ -4,8 +4,9 @@ import { Component } from '@angular/core';
   selector: 'app-root',
   template: `
     <div class="container">
-      <h1>Angular Avancé !</h1>
-      <app-recipe></app-recipe>
+      <h1>Movie DB</h1>
+
+      <app-movies></app-movies>
     </div>
   `,
   styles: [],
