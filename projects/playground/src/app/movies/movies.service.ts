@@ -35,13 +35,13 @@ export class MoviesService {
   /**
    * Permet d'obtenir un tableau de Movies
    */
-  getPopularMovies() {
+  getPopularMovies(page: number = 1) {
     // On appelle l'API en GET en précisant bien qu'on devrait recevoir un objet de type
     // ApiPopularResponse, qui n'est pas un tableau de movies, on devra donc transformer
     // les données reçues
     return this.http
       .get<ApiPopularResponse>(
-        'https://api.themoviedb.org/3/movie/popular?page=1'
+        'https://api.themoviedb.org/3/movie/popular?page=' + page
       )
       .pipe(
         // On utilise l'opérateur "map" qui reçoit un objet de type ApiPopularResponse

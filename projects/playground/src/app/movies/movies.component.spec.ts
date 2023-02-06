@@ -48,10 +48,7 @@ describe('MoviesComponent avec TestBed', () => {
     fixture = TestBed.createComponent(MoviesComponent);
     // On récupère l'instance de notre composant
     component = fixture.componentInstance;
-  });
 
-  // Le composant devrait afficher des films
-  it('should show movies', () => {
     // On simule le retour de la méthode getPopularMovies de notre MoviesService
     // TestBed.inject permet de récupérer une instance d'un service
     // ça revient exactement à écrire :
@@ -62,10 +59,47 @@ describe('MoviesComponent avec TestBed', () => {
       of(MOCK_MOVIES)
     );
 
+    spyOn(TestBed.inject(MoviesService), 'getGenres').and.returnValue(of([]));
+
     // On lance la détection de changement pour que le ngOnInit soit appelé
     fixture.detectChanges();
+  });
 
+  // Le composant devrait afficher des films
+  it('should show movies', () => {
     // On s'attend à ce que le DOM contienne 2 éléments avec la classe .movie
+    expect(fixture.nativeElement.querySelectorAll('.movie').length).toBe(2);
+  });
+
+  it('should load more movies when we scroll to the bottom', () => {
+    // On s'attend à ce que le DOM contienne 2 éléments avec la classe .movie
+    expect(fixture.nativeElement.querySelectorAll('.movie').length).toBe(2);
+
+    // On contrôle de l'extérieur le fait qu'on soit en bas de la page
+    component.isAtTheBottomOfThePage = () => true;
+
+    // On simule un scroll
+    window.dispatchEvent(new Event('scroll'));
+
+    fixture.detectChanges();
+
+    // On s'attend à ce que le DOM contienne 4 éléments avec la classe .movie
+    expect(fixture.nativeElement.querySelectorAll('.movie').length).toBe(4);
+  });
+
+  it('should not load more movies when we scroll and are not at the bottom', () => {
+    // On s'attend à ce que le DOM contienne 2 éléments avec la classe .movie
+    expect(fixture.nativeElement.querySelectorAll('.movie').length).toBe(2);
+
+    // On contrôle de l'extérieur le fait qu'on soit en bas de la page
+    component.isAtTheBottomOfThePage = () => false;
+
+    // On simule un scroll
+    window.dispatchEvent(new Event('scroll'));
+
+    fixture.detectChanges();
+
+    // On s'attend à ce que le DOM contienne 4 éléments avec la classe .movie
     expect(fixture.nativeElement.querySelectorAll('.movie').length).toBe(2);
   });
 });
@@ -81,17 +115,14 @@ describe('MoviesComponent avec Spectator', () => {
     mocks: [MoviesService],
   });
 
-  beforeEach(
-    () =>
-      (spectator = createComponent({
-        // On précise ici qu'on ne veut pas lancer la détection de changement
-        // dès la création du composant, sinon le ngOnInit serait appelé
-        // et on ne pourrait pas mocker les méthodes de MoviesService
-        detectChanges: false,
-      }))
-  );
+  beforeEach(() => {
+    spectator = createComponent({
+      // On précise ici qu'on ne veut pas lancer la détection de changement
+      // dès la création du composant, sinon le ngOnInit serait appelé
+      // et on ne pourrait pas mocker les méthodes de MoviesService
+      detectChanges: false,
+    });
 
-  it('should show movies', () => {
     // On demande à spectator de nous donner l'instance de MoviesService
     // dont les méthodes sont DEJA des espions, on ne fait ici que préciser
     // le retour de la méthode getPopularMovies
@@ -104,7 +135,31 @@ describe('MoviesComponent avec Spectator', () => {
 
     // On lance la détection de changement pour que le ngOnInit soit appelé
     spectator.detectChanges();
+  });
 
+  it('should show movies', () => {
     expect(spectator.queryAll('.movie').length).toBe(2);
+  });
+
+  it('should load more movies when we scroll to the bottom', () => {
+    // On contrôle de l'extérieur le fait qu'on soit en bas de la page
+    spectator.component.isAtTheBottomOfThePage = () => true;
+
+    // On simule un scroll
+    spectator.dispatchFakeEvent(window, 'scroll');
+
+    // On s'attend à ce que le DOM contienne 4 éléments avec la classe .movie
+    expect(spectator.queryAll('.movie')).toHaveLength(4);
+  });
+
+  it('should not load more movies when we scroll and are not at the bottom', () => {
+    // On contrôle de l'extérieur le fait qu'on soit en bas de la page
+    spectator.component.isAtTheBottomOfThePage = () => false;
+
+    // On simule un scroll
+    spectator.dispatchFakeEvent(window, 'scroll');
+
+    // On s'attend à ce que le DOM contienne 4 éléments avec la classe .movie
+    expect(spectator.queryAll('.movie')).toHaveLength(2);
   });
 });
