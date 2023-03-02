@@ -1,10 +1,12 @@
 import { Component, OnInit } from '@angular/core';
+import { Router } from '@angular/router';
+import { AuthService } from './auth.service';
 
 @Component({
   selector: 'app-login',
   template: `
     <h1>Connexion</h1>
-    <form>
+    <form (submit)="onSubmit()">
       <div class="form-group mb-2">
         <input
           type="email"
@@ -25,7 +27,12 @@ import { Component, OnInit } from '@angular/core';
   styles: [],
 })
 export class LoginComponent implements OnInit {
-  constructor() {}
+  constructor(private authService: AuthService, private router: Router) {}
 
   ngOnInit(): void {}
+
+  onSubmit() {
+    this.authService.login();
+    this.router.navigateByUrl('/messages');
+  }
 }

@@ -1,13 +1,20 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
+import { NgForm } from '@angular/forms';
 
 @Component({
   selector: 'app-email-creation',
   template: `
     <h1>Nouveau message</h1>
 
-    <form>
+    <form #form="ngForm">
       <div class="form-group mb-2">
-        <input type="email" placeholder="Adresse email" class="form-control" />
+        <input
+          type="email"
+          ngModel
+          name="email"
+          placeholder="Adresse email"
+          class="form-control"
+        />
       </div>
       <div class="form-group mb-2">
         <input
@@ -28,6 +35,13 @@ import { Component, OnInit } from '@angular/core';
   styles: [],
 })
 export class EmailCreationComponent implements OnInit {
+  @ViewChild('form', { read: NgForm })
+  form?: NgForm;
+
+  isFormTouched() {
+    return this.form?.touched;
+  }
+
   constructor() {}
 
   ngOnInit(): void {}

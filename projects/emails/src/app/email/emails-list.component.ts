@@ -77,35 +77,11 @@ export class EmailsListComponent implements OnInit {
      * route. Dès que les params de la route vont changer, data$ va émettre une nouvelle valeur
      * transformée grâce au pipe()
      */
-    this.data$ = this.route.paramMap.pipe(
-      // On récupère le paramètre "type" de la route
-      map((params) => params.get('type')),
-      // On l'enregistre immédiatement dans notre propriété type
-      tap((type) => (this.type = type)),
-      // Ensuite on transforme le type en un objet contenant la liste des emails à afficher et le
-      // titre de la page
-      map((type) => {
-        if (type === 'sent') {
-          return {
-            emails: FAKE_EMAILS_DATA.filter(
-              (email) => email.status === 'SENT'
-            ) as Email[],
-            title: 'Messages envoyés',
-          };
-        }
-
-        if (type === 'trash') {
-          return {
-            emails: FAKE_EMAILS_DATA.filter(
-              (email) => email.status === 'TRASH'
-            ) as Email[],
-            title: 'Corbeille',
-          };
-        }
-
+    this.data$ = this.route.data.pipe(
+      map((data) => {
         return {
-          emails: FAKE_EMAILS_DATA as Email[],
-          title: 'Boîte de réception',
+          emails: data['emails'],
+          title: data['title'],
         };
       })
     );
