@@ -1,6 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { Inject, Injectable } from '@angular/core';
 import { BehaviorSubject, map, tap } from 'rxjs';
+import { environment } from '../../environments/environment';
 import { TokenManager, TOKEN_MANAGER } from './jwt/token.manager';
 
 export type RegisterData = {
@@ -22,11 +23,19 @@ export type ApiExistsResponse = {
   exists: boolean;
 };
 
+const API_URL = environment.apiUrl;
+
 @Injectable()
 export class AuthService {
   // Ce Subject est un Observable qu'on pourra suivre et écouter partout dans l'application
   // Il permet d'être au courant de l'état de l'authentification
   authStatus$ = new BehaviorSubject<boolean>(false);
+
+  // On expose un getter qui retourne un Observable qui contient le token, il sera utile dans le AuthInterceptor
+  // et pourquoi pas à d'autres endroits où le token sera nécessaire
+  get authToken$() {
+    return this.tokenManager.loadToken();
+  }
 
   constructor(
     // Notez qu'on ne demande pas ici en particulier le LocalStorageTokenManager, mais bien un TokenManager
@@ -46,18 +55,12 @@ export class AuthService {
   }
 
   register(registerData: RegisterData) {
-    return this.http.post(
-      'https://x8ki-letl-twmt.n7.xano.io/api:UwMsW9-l/auth/signup',
-      registerData
-    );
+    return this.http.post(API_URL + '/auth/signup', registerData);
   }
 
   login(loginData: LoginData) {
     return this.http
-      .post<ApiLoginResponse>(
-        'https://x8ki-letl-twmt.n7.xano.io/api:UwMsW9-l/auth/login',
-        loginData
-      )
+      .post<ApiLoginResponse>(API_URL + '/auth/login', loginData)
       .pipe(
         // On reçoit la réponse qui contient un token, et on extrait ce token
         map((response) => response.authToken),

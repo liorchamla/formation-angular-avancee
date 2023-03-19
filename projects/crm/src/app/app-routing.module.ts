@@ -6,6 +6,11 @@ const routes: Routes = [
     path: 'account',
     loadChildren: () => import('./auth/auth.module').then((m) => m.AuthModule),
   },
+  {
+    path: 'invoices',
+    loadChildren: () =>
+      import('./invoice/invoice.module').then((m) => m.InvoiceModule),
+  },
 ];
 
 @NgModule({
