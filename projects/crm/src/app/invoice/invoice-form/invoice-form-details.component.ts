@@ -15,6 +15,7 @@ import { InvoiceFormType } from '../types';
         <button
           class="btn btn-sm btn-outline-light"
           (click)="addDetailEvent.emit()"
+          id="add-detail-initial"
         >
           + Ajouter ma première ligne
         </button>
@@ -76,6 +77,7 @@ import { InvoiceFormType } from '../types';
                 type="button"
                 class="btn w-auto d-block btn-sm btn-danger"
                 (click)="removeDetailEvent.emit(index)"
+                id="remove-detail-{{ index }}"
               >
                 X
               </button>
@@ -88,6 +90,7 @@ import { InvoiceFormType } from '../types';
           class="btn btn-primary btn-sm"
           type="button"
           (click)="addDetailEvent.emit()"
+          id="add-detail"
         >
           + Ajouter une ligne
         </button>
