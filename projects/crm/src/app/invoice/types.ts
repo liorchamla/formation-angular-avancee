@@ -36,6 +36,9 @@ export type Invoice = {
   created_at?: number;
   customer_name: string;
   description: string;
-  status: 'SENT' | 'PAID' | 'CANCELED';
+  status: InvoiceStatus;
   details: InvoiceDetail[];
+  total?: number;
 };
+
+export type InvoiceStatus = 'SENT' | 'PAID' | 'CANCELED';

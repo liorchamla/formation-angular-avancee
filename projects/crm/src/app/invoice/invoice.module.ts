@@ -13,6 +13,7 @@ import localeFr from '@angular/common/locales/fr';
 import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
 import { InvoiceService } from './invoice.service';
 import { AuthInterceptor } from './auth.interceptor';
+import { InvoiceStatusComponent } from './invoices-list/invoice-status.component';
 
 // Nous enregistrons auprès de Angular la locale fr (elle sera utile pour les pipes de date ou de montant !)
 registerLocaleData(localeFr);
@@ -32,6 +33,7 @@ const routes: Routes = [
     InvoiceFormGeneralComponent,
     InvoiceFormDetailsComponent,
     InvoiceFormTotalsComponent,
+    InvoiceStatusComponent,
   ],
   imports: [
     CommonModule,

@@ -1,4 +1,4 @@
-import { Component, EventEmitter, OnInit, Output } from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import {
   FormBuilder,
   FormGroup,
@@ -37,6 +37,8 @@ const { required, minLength, min } = Validators;
   styles: [],
 })
 export class InvoiceFormComponent implements OnInit {
+  @Input() invoice?: Invoice;
+
   @Output('form-submit') formSubmitEvent = new EventEmitter<Invoice>();
 
   invoiceForm: InvoiceFormType = this.fb.group({
@@ -70,7 +72,15 @@ export class InvoiceFormComponent implements OnInit {
 
   constructor(private fb: FormBuilder) {}
 
-  ngOnInit(): void {}
+  ngOnInit(): void {
+    if (!this.invoice) {
+      return;
+    }
+
+    this.invoice.details.forEach((item) => this.onAddDetail());
+
+    this.invoiceForm.patchValue(this.invoice);
+  }
 
   get details() {
     return this.invoiceForm.controls.details;
