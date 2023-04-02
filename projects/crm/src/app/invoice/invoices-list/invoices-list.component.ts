@@ -41,6 +41,7 @@ import { Invoice } from '../types';
               <button
                 class="btn btn-sm ms-1 btn-danger"
                 (click)="onDelete(invoice.id!)"
+                id="delete-button-{{ invoice.id }}"
               >
                 Supprimer
               </button>
@@ -65,7 +66,12 @@ export class InvoicesListComponent implements OnInit {
     this.service
       .findAll()
       .pipe(takeUntil(this.destroy$))
-      .subscribe((invoices) => (this.invoices = invoices));
+      .subscribe({
+        next: (invoices) => (this.invoices = invoices),
+        error: () =>
+          (this.errorMessage =
+            'Il y a eu un problème lors de la récupération des factures'),
+      });
   }
 
   onDelete(id: number) {
